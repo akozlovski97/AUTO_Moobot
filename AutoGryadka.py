@@ -63,11 +63,17 @@ class GryadkaMod(loader.Module):
                     try:
                         await asyncio.sleep(random.uniform(1.5, 2))
                         random_zvezda = random.randrange(0, 8)
+                        
                         await get_create_gryadka.click(data=f'c_gryad {self.tg_id} g_ch1 {self.counter[create_gryadka]} {random_zvezda}'.encode())
-                        await asyncio.sleep(random.uniform(1.5, 2))  
-                        await get_create_gryadka.click(data=f'c_gryad {self.tg_id} g_all {self.counter[create_gryadka]} {random_zvezda}'.encode())
-                        await asyncio.sleep(random.uniform(1.5, 2)) 
-                        await get_create_gryadka.click(data=f'c_gryad {self.tg_id} g_ch2 {self.counter[create_gryadka]} {random_zvezda} {item}'.encode())
+                        await asyncio.sleep(random.uniform(1.5, 2))
+
+                        updated_msg = await self.client.get_messages(self.chat_id, ids=get_create_gryadka.id)
+                        if updated_msg and updated_msg.text and "полного засеивания" not in updated_msg.text:
+                            await get_create_gryadka.click(data=f'c_gryad {self.tg_id} g_all {self.counter[create_gryadka]} {random_zvezda}'.encode())
+                            await asyncio.sleep(random.uniform(1.5, 2)) 
+                            
+                        clean_item = item[:-2] if item.endswith(' &') else item
+                        await get_create_gryadka.click(data=f'c_gryad {self.tg_id} g_ch2 {self.counter[create_gryadka]} {random_zvezda} {clean_item}'.encode())
                         await asyncio.sleep(random.uniform(1.5, 2))
                         await get_create_gryadka.click(data=f'c_gryad {self.tg_id} main'.encode())
                         self.counter[create_gryadka] += 1
@@ -84,7 +90,7 @@ class GryadkaMod(loader.Module):
         logger.info("Loop started")
         
         button_text_1 = "🌞 Сонячна 💗 ок"
-        button_text_2 = r"🌞 Сонячна ⌛️ \d+%"
+        button_text_2 = r"🌞 Сонячна (?:⌛️|🚫) \d+%"
         button_text_3 = "🌞 Сонячна"
 
         while self.db.get(self.strings["name"], "enabled", False):
@@ -186,15 +192,23 @@ class GryadkaMod(loader.Module):
                             await get_mug3.click(data=f'c_gryad {self.tg_id} g_open {self.counter[button_text_3]}'.encode())
                             await asyncio.sleep(random.uniform(1.5, 2))
                             random_zvezda = random.randrange(0, 8)
+                            
                             await get_mug3.click(data=f'c_gryad {self.tg_id} g_ch1 {self.counter[button_text_3]} {random_zvezda}'.encode())
-                            await asyncio.sleep(random.uniform(1.5, 2))  
-                            await get_mug3.click(data=f'c_gryad {self.tg_id} g_all {self.counter[button_text_3]} {random_zvezda}'.encode())
+                            await asyncio.sleep(random.uniform(1.5, 2))
+
+                            updated_msg = await self.client.get_messages(self.chat_id, ids=get_mug3.id)
+                            if updated_msg and updated_msg.text and "полного засеивания" not in updated_msg.text:
+                                await get_mug3.click(data=f'c_gryad {self.tg_id} g_all {self.counter[button_text_3]} {random_zvezda}'.encode())
+                                await asyncio.sleep(random.uniform(1.5, 2)) 
+                                
+                            clean_item = item[:-2] if item.endswith(' &') else item
+                            await get_mug3.click(data=f'c_gryad {self.tg_id} g_ch2 {self.counter[button_text_3]} {random_zvezda} {clean_item}'.encode())
                             await asyncio.sleep(random.uniform(1.5, 2)) 
-                            await get_mug3.click(data=f'c_gryad {self.tg_id} g_ch2 {self.counter[button_text_3]} {random_zvezda} {item}'.encode())
-                            await asyncio.sleep(random.uniform(1.5, 2)) 
+                            
                             await get_mug3.click(data=f'c_gryad {self.tg_id} g_water {self.counter[button_text_3]}'.encode())
                             await self.client.send_message(notify_id, "💧 -1 водичка")
                             await asyncio.sleep(random.uniform(1.5, 2))  
+                            
                             await get_mug3.click(data=f'c_gryad {self.tg_id} main'.encode())
                             await asyncio.sleep(random.uniform(1.5, 2)) 
                             self.counter[button_text_3] += 1
